@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychologia - Strefa Wiedzy</title>
+    
+    <!-- Ładowanie Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Ustawienia globalne i font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Delikatnie szare tło */
+            background-color: #f7f7f7; 
+            color: #333;
+            min-height: 100vh;
+        }
+        /* Style dla akordeonu */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 1rem;
+        }
+        .accordion-content.active {
+            max-height: 5000px; /* Duża wartość dla płynnego otwarcia */
+            padding: 1rem;
+        }
+        /* Ukrycie ekranów domyślnie, JS ustawia widoczność */
+        .screen {
+            display: none;
+            /* Zapewnienie, że ekrany treści mają minimalną wysokość */
+            min-height: 400px; 
+        }
+        /* Estetyka dla mobilnych */
+        .container {
+            max-width: 640px;
+        }
+    </style>
+    <script>
+        // Funkcja do przełączania ekranów
+        function showScreen(screenId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.style.display = 'none';
+            });
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.style.display = 'block';
+                // Automatyczne przewinięcie do góry przy zmianie ekranu
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            } else {
+                console.error("Ekran o ID " + screenId + " nie został znaleziony.");
+            }
+            
+            // Logika: zamykanie akordeonów przy zmianie ekranu
+            document.querySelectorAll('.accordion-content.active').forEach(content => {
+                content.classList.remove('active');
+                content.previousElementSibling.querySelector('svg')?.classList.remove('rotate-180');
+            });
+        }
+
+        // Funkcja do przełączania akordeonów (zamyka inne)
+        function toggleAccordion(contentId) {
+            const content = document.getElementById(contentId);
+            const button = content.previousElementSibling;
+
+            // Zamykanie wszystkich otwartych, jeśli nie jest to aktualny
+            document.querySelectorAll('.accordion-content.active').forEach(openContent => {
+                if (openContent.id !== contentId) {
+                    openContent.classList.remove('active');
+                    openContent.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
+                }
+            });
+
+            // Przełączanie aktualnego
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                button.querySelector('svg').classList.remove('rotate-180');
+            } else {
+                content.classList.add('active');
+                button.querySelector('svg').classList.add('rotate-180');
+            }
+        }
+
+        // Uruchomienie ekranu startowego po załadowaniu
+        window.onload = () => {
+            showScreen('welcome-screen');
+        };
+    </script>
+</head>
+<body class="p-4">
+
+    <!-- Kontener Główny - Centruje zawartość i nadaje ładny cień -->
+    <div class="container mx-auto bg-white rounded-xl shadow-2xl p-6 min-h-[calc(100vh-2rem)]">
+        
+        <!-- Ekran Powitalny (welcome-screen) -->
+        <div id="welcome-screen" class="screen flex flex-col items-center justify-center text-center h-full min-h-[500px]">
+            <h1 class="text-4xl font-extrabold text-blue-800 mb-4">Witaj w strefie wiedzy!</h1>
+            <p class="text-lg text-gray-600 mb-12">Wybierz przedmiot, z którego potrzebujesz informacji.</p>
+            
+            <div class="w-full space-y-4">
+                <button onclick="showScreen('menu-screen')" 
+                    class="w-full py-4 bg-blue-600 text-white font-semibold text-xl rounded-lg shadow-lg hover:bg-blue-700 transition duration-150 transform hover:scale-[1.01] flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    <span class="mr-3 text-2xl">🧠</span> Psychologia
+                </button>
+            </div>
+        </div>
+
+        <!-- Ekran Menu Psychologii (menu-screen) -->
+        <div id="menu-screen" class="screen">
+            <button onclick="showScreen('welcome-screen')"
+                class="mb-6 w-full py-2 bg-gray-100 text-gray-600 font-medium rounded-lg shadow hover:bg-gray-200 transition duration-150">
+                &lt; Powrót do przedmiotów
+            </button>
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center border-b-2 pb-3">Menu Modułów Psychologii</h2>
+            
+            <div class="space-y-4">
+                <!-- 1. Mechanizm Złości (RÓŻOWY) -->
+                <button onclick="showScreen('mechanism-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-pink-50 hover:bg-pink-100 transition duration-150 border-l-4 border-pink-500 transform hover:translate-x-0.5">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3 text-pink-600">🧠</span>
+                        <span class="font-semibold text-xl text-pink-700">Sześcioetapowy Mechanizm Powstawania Złości</span>
+                    </div>
+                </button>
+
+                <!-- 2. Przyczyny Złości (ŻÓŁTY) -->
+                <button onclick="showScreen('anger-causes-new-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-yellow-50 hover:bg-yellow-100 transition duration-150 border-l-4 border-yellow-500 transform hover:translate-x-0.5">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3 text-yellow-600">🧩</span>
+                        <span class="font-semibold text-xl text-yellow-700">Przyczyny Złości</span>
+                    </div>
+                </button>
+
+                <!-- 3. Przyczyny Agresji (CZERWONY) -->
+                <button onclick="showScreen('causes-of-anger-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-red-50 hover:bg-red-100 transition duration-150 border-l-4 border-red-500 transform hover:translate-x-0.5">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3 text-red-600">🔥</span>
+                        <span class="font-semibold text-xl text-red-700">Przyczyny Agresji (Wzorce Zachowań)</span>
+                    </div>
+                </button>
+
+                <!-- 4. Pułapka Tragizowania (TURKUS) -->
+                <button onclick="showScreen('tragedy-trap-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-teal-50 hover:bg-teal-100 transition duration-150 border-l-4 border-teal-500 transform hover:translate-x-0.5">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3 text-teal-600">💎</span>
+                        <span class="font-semibold text-xl text-teal-700">Pułapka Tragizowania</span>
+                    </div>
+                </button>
+                
+                <!-- 5. Rozumienie vs Wyjaśnianie (NIEBIESKI) -->
+                <button onclick="showScreen('understanding-explaining-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-blue-50 hover:bg-blue-100 transition duration-150 border-l-4 border-blue-500 transform hover:translate-x-0.5">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3 text-blue-600">🔎</span>
+                        <span class="font-semibold text-xl text-blue-700">Rozumienie (Verstehen) a Wyjaśnianie (Erklären)</span>
+                    </div>
+                </button>
+
+                <!-- 6. Etapy Eriksona (POMARAŃCZ) - Zachowujemy dla menu, ale zawartość ma kolory tęczy -->
+                <button onclick="showScreen('erikson-stages-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-orange-50 hover:bg-orange-100 transition duration-150 border-l-4 border-orange-500 transform hover:translate-x-0.5">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3 text-orange-600">🪜</span>
+                        <span class="font-semibold text-xl text-orange-700">Osiem Etapów Rozwoju Psychospołecznego wg Eriksona</span>
+                    </div>
+                </button>
+
+                <!-- 7. O Przebaczeniu (FIOLETOWY) -->
+                <button onclick="showScreen('forgiveness-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-purple-50 hover:bg-purple-100 transition duration-150 border-l-4 border-purple-500 transform hover:translate-x-0.5">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3 text-purple-600">💜</span>
+                        <span class="font-semibold text-xl text-purple-700">O Przebaczeniu i Pojednaniu</span>
+                    </div>
+                </button>
+            </div>
+            
+        </div>
+
+        <!-- Ekran 1: Mechanizm Złości (RÓŻOWY) -->
+        <div id="mechanism-content" class="screen">
+            <button onclick="showScreen('menu-screen')"
+                class="mb-6 w-full py-2 bg-pink-100 text-pink-600 font-medium rounded-lg shadow hover:bg-pink-200 transition duration-150">
+                &lt; Powrót do Menu
+            </button>
+            <h2 class="text-3xl font-bold text-pink-700 mb-6 text-center border-b pb-3 border-pink-300">🧠 Sześcioetapowy Mechanizm Powstawania Złości</h2>
+            <p class="text-sm text-gray-500 mb-6 text-center italic">Koncepcja P. Haucka (1994)</p>
+
+            <!-- Fazy Mechanizmu Złości -->
+            <div class="space-y-3">
+                
+                <div class="rounded-lg shadow-md overflow-hidden bg-pink-50">
+                    <button onclick="toggleAccordion('content-faza1')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-pink-800 bg-pink-200 hover:bg-pink-300 focus:outline-none transition duration-150">
+                        <span>I. „CHCĘ CZEGOŚ...”</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-faza1" class="accordion-content">
+                        <p class="font-bold mb-2 text-pink-700">Potrzeba a Pragnienie:</p>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Potrzeba:</span> Jest niezbędna do zdrowego utrzymania / funkcjonowania.</li>
+                            <li><span class="font-semibold">Pragnienie:</span> To potrzeba wzbudzona przez otoczenie.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-pink-50">
+                    <button onclick="toggleAccordion('content-faza2')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-pink-800 bg-pink-200 hover:bg-pink-300 focus:outline-none transition duration-150">
+                        <span>II. „NIE DOSTAŁEM TEGO, CZEGO PRAGNĘ I JESTEM FRUSTROWANY.”</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-faza2" class="accordion-content">
+                        <p class="font-bold mb-2 text-pink-700">Frustracja:</p>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Nieprzyjemny stan, gdy zablokowana zostaje możliwość realizacji celu.</li>
+                        </ul>
+                        <p class="font-bold mt-3 mb-2 text-pink-700">Możliwe Działania (Konstruktywne):</p>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Zmiana strategii działania lub modyfikacja pragnienia.</li>
+                            <li>Praca z frustracją (tolerowanie i adaptacja).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-pink-50">
+                    <button onclick="toggleAccordion('content-faza3')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-pink-800 bg-pink-200 hover:bg-pink-300 focus:outline-none transition duration-150">
+                        <span>III. „TO STRASZNE I OKROPNE NIE DOSTAĆ TEGO, CZEGO SIĘ PRAGNIE...”</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-faza3" class="accordion-content">
+                        <p class="font-bold mb-2 text-pink-700">Katastrofizacja:</p>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Osoba czuje się strasznie, ponieważ jest sfrustrowana.</li>
+                            <li><span class="font-semibold">Pułapka Sprawiedliwości:</span> Przekonanie, że świat musi nagradzać dobre zachowanie.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-pink-50">
+                    <button onclick="toggleAccordion('content-faza4')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-pink-800 bg-pink-200 hover:bg-pink-300 focus:outline-none transition duration-150">
+                        <span>IV. „NIE POWINIENEŚ MNIE FRUSTROWAĆ, MUSZĘ MIEĆ TO, CZEGO PRAGNĘ!”</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-faza4" class="accordion-content">
+                        <p class="font-bold mb-2 text-pink-700">Moment Operacyjny (zwrotny):</p>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Zamiana języka: <span class="font-semibold">"chcę" na "muszę"</span> (Uważamy, że coś się nam należy!).</li>
+                            <li>Następuje poszukiwanie winnego (Powiązanie frustracji z tym, co jest na zewnątrz).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-pink-50">
+                    <button onclick="toggleAccordion('content-faza5')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-pink-800 bg-pink-200 hover:bg-pink-300 focus:outline-none transition duration-150">
+                        <span>V. „FRUSTRUJESZ MNIE, WIĘC JESTEŚ ZŁY...”</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-faza5" class="accordion-content">
+                        <p class="font-bold mb-2 text-pink-700">Przerzucenie Winy:</p>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Skoro ja czuję się źle, to Ty jesteś winny.</li>
+                            <li>Powstaje <span class="font-semibold">agresja bierna</span> (budowanie z kogoś wroga).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-pink-50">
+                    <button onclick="toggleAccordion('content-faza6')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-pink-800 bg-pink-200 hover:bg-pink-300 focus:outline-none transition duration-150">
+                        <span>VI. „ZŁYCH LUDZI NALEŻY UKARAĆ...”</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-faza6" class="accordion-content">
+                        <p class="font-bold mb-2 text-pink-700">Karanie:</p>
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Skoro ktoś jest winny → należy go ukarać (biernie lub czynnie).</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Ekran 2: Przyczyny Złości (ŻÓŁTY) -->
+        <div id="anger-causes-new-content" class="screen">
+            <button onclick="showScreen('menu-screen')"
+                class="mb-6 w-full py-2 bg-yellow-100 text-yellow-600 font-medium rounded-lg shadow hover:bg-yellow-200 transition duration-150">
+                &lt; Powrót do Menu
+            </button>
+            <h2 class="text-3xl font-bold text-yellow-700 mb-6 text-center border-b pb-3 border-yellow-300">🧩 Przyczyny Złości</h2>
+            
+            <div class="space-y-3">
+                
+                <div class="rounded-lg shadow-md overflow-hidden bg-yellow-50">
+                    <button onclick="toggleAccordion('content-new-causes1')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-yellow-800 bg-yellow-200 hover:bg-yellow-300 focus:outline-none transition duration-150">
+                        <span>1. Przyczyny Biologiczne</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-new-causes1" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Zmiany w układzie nerwowym.</li>
+                            <li>Wahania poziomu hormonów (kortyzol, adrenalina, testosteron).</li>
+                            <li>Zmęczenie, głód, brak snu obniżające tolerancję na stres.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-yellow-50">
+                    <button onclick="toggleAccordion('content-new-causes2')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-yellow-800 bg-yellow-200 hover:bg-yellow-300 focus:outline-none transition duration-150">
+                        <span>2. Przyczyny Psychologiczne</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-new-causes2" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Frustracja</span> – zablokowanie realizacji potrzeb lub celów.</li>
+                            <li>Poczucie niesprawiedliwości, krzywdy lub zagrożenia.</li>
+                            <li>Niska tolerancja na stres i trudności w samoregulacji.</li>
+                            <li>Niska samoocena (złość jako mechanizm obronny).</li>
+                            <li>Traumy emocjonalne.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-yellow-50">
+                    <button onclick="toggleAccordion('content-new-causes3')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-yellow-800 bg-yellow-200 hover:bg-yellow-300 focus:outline-none transition duration-150">
+                        <span>3. Społeczne i sytuacyjne</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-new-causes3" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Prowokacja lub krytyka ze strony innych.</li>
+                            <li>Presja społeczna, nadmiar obowiązków.</li>
+                            <li>Trudne warunki środowiskowe (hałas, tłok).</li>
+                            <li>Brak wsparcia emocjonalnego.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-yellow-50">
+                    <button onclick="toggleAccordion('content-new-causes4')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-yellow-800 bg-yellow-200 hover:bg-yellow-300 focus:outline-none transition duration-150">
+                        <span>4. Kulturowe i wychowawcze</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-new-causes4" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Brak nauki konstruktywnego wyrażania emocji w dzieciństwie.</li>
+                            <li>Wzorce rodzinne reagujące złością.</li>
+                            <li>Normy społeczne (tłumienie emocji).</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Ekran 3: Przyczyny Agresji (CZERWONY) -->
+        <div id="causes-of-anger-content" class="screen">
+            <button onclick="showScreen('menu-screen')"
+                class="mb-6 w-full py-2 bg-red-100 text-red-600 font-medium rounded-lg shadow hover:bg-red-200 transition duration-150">
+                &lt; Powrót do Menu
+            </button>
+            <h2 class="text-3xl font-bold text-red-700 mb-6 text-center border-b pb-3 border-red-300">🔥 Przyczyny Agresji (Wzorce Zachowań)</h2>
+            
+            <!-- Przyczyny -->
+            <div class="space-y-3">
+                
+                <div class="rounded-lg shadow-md overflow-hidden bg-red-50">
+                    <button onclick="toggleAccordion('content-causes1')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-red-800 bg-red-200 hover:bg-red-300 focus:outline-none transition duration-150">
+                        <span>1. Przyczyny Biologiczne</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-causes1" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Czynniki genetyczne</span> – dziedziczna skłonność do impulsywności.</li>
+                            <li><span class="font-semibold">Neuroprzekaźniki</span> – niski poziom serotoniny, wysoki poziom dopaminy i testosteronu.</li>
+                            <li><span class="font-semibold">Uszkodzenia mózgu</span> – płaty czołowe (kontrola impulsów).</li>
+                            <li>Wpływ substancji psychoaktywnych.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-red-50">
+                    <button onclick="toggleAccordion('content-causes2')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-red-800 bg-red-200 hover:bg-red-300 focus:outline-none transition duration-150">
+                        <span>2. Przyczyny Psychologiczne</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-causes2" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Teoria frustracji–agresji</span>.</li>
+                            <li>Utrwalone wzorce zachowania.</li>
+                            <li>Niska <span class="font-semibold">samokontrola</span> i impulsywność.</li>
+                            <li><span class="font-semibold">Zaburzenia osobowości</span> (np. antyspołeczna, borderline).</li>
+                            <li>Potrzeba dominacji lub władzy.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-red-50">
+                    <button onclick="toggleAccordion('content-causes3')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-red-800 bg-red-200 hover:bg-red-300 focus:outline-none transition duration-150">
+                        <span>3. Przyczyny Społeczne i Środowiskowe</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-causes3" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Modelowanie</span> – uczenie się przez obserwację (Bandura).</li>
+                            <li>Presja grupowa i rywalizacja.</li>
+                            <li>Normy grupowe (agresja jest akceptowana).</li>
+                            <li>Warunki życia (ubóstwo, marginalizacja).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-red-50">
+                    <button onclick="toggleAccordion('content-causes4')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-red-800 bg-red-200 hover:bg-red-300 focus:outline-none transition duration-150">
+                        <span>4. Przyczyny Kulturowe i Wychowawcze</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-causes4" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Agresywny styl wychowania.</li>
+                            <li>Brak pozytywnych wzorców rozwiązywania konfliktów.</li>
+                            <li>Przekonania kulturowe (agresja = siła).</li>
+                            <li>Brak edukacji emocjonalnej.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ekran 4: Pułapka Tragizowania (TURKUS) -->
+        <div id="tragedy-trap-content" class="screen">
+            <button onclick="showScreen('menu-screen')"
+                class="mb-6 w-full py-2 bg-teal-100 text-teal-600 font-medium rounded-lg shadow hover:bg-teal-200 transition duration-150">
+                &lt; Powrót do Menu
+            </button>
+            <h2 class="text-3xl font-bold text-teal-700 mb-6 text-center border-b pb-3 border-teal-300">💎 Pułapka Tragizowania</h2>
+            
+            <div class="space-y-4">
+                
+                <div class="rounded-lg shadow-md overflow-hidden bg-teal-50">
+                    <button onclick="toggleAccordion('content-tragedy-1')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-teal-800 bg-teal-200 hover:bg-teal-300 focus:outline-none transition duration-150">
+                        <span>1. Definicja i Charakterystyka</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-tragedy-1" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Tendencja do wyolbrzymiania negatywnych konsekwencji zdarzeń, które nas spotykają.</span></li>
+                            <li>Traktowanie negatywnych zdarzeń jako absolutnie najgorszych, jakie mogły się przydarzyć ("okropne i fatalne").</li>
+                            <li>Jest to silna forma negatywnej frustracji.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-teal-50">
+                    <button onclick="toggleAccordion('content-tragedy-2')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-teal-800 bg-teal-200 hover:bg-teal-300 focus:outline-none transition duration-150">
+                        <span>2. 7 Etapów Wpadania w Pułapkę</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-tragedy-2" class="accordion-content">
+                        <ul class="list-decimal ml-6 space-y-2 text-gray-700">
+                            <li><span class="font-semibold">Wybieramy wyolbrzymianie:</span> Decydujemy się na wyolbrzymianie negatywnych skutków zdarzeń.</li>
+                            <li><span class="font-semibold">Wmawiamy sobie, że jest okropne:</span> Że jest fatalne nie otrzymać tego, czego się pragnie.</li>
+                            <li><span class="font-semibold">Rozpoczynamy cykl trudnych emocji:</span> Wzrost frustracji, lęk, gniew.</li>
+                            <li><span class="font-semibold">Odrzut pozytywny:</span> Odmawiamy możliwości obiektywnego spojrzenia na sytuację.</li>
+                            <li><span class="font-semibold">Samopotwierdzanie:</span> Przekonanie, że "widzisz, to jest po prostu prawda".</li>
+                            <li><span class="font-semibold">Utożsamianie się z cierpieniem:</span> Cierpienie staje się częścią tożsamości.</li>
+                            <li><span class="font-semibold">Brak perspektywy:</span> Rezygnacja z walki o nadzieję.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ekran 5: Rozumienie a Wyjaśnianie (NIEBIESKI) -->
+        <div id="understanding-explaining-content" class="screen">
+            <button onclick="showScreen('menu-screen')"
+                class="mb-6 w-full py-2 bg-blue-100 text-blue-600 font-medium rounded-lg shadow hover:bg-blue-200 transition duration-150">
+                &lt; Powrót do Menu
+            </button>
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center border-b pb-3 border-blue-300">🔎 Rozumienie (Verstehen) a Wyjaśnianie (Erklären)</h2>
+
+            <div class="space-y-3">
+                
+                <div class="rounded-lg shadow-md overflow-hidden bg-blue-50">
+                    <button onclick="toggleAccordion('content-v-1')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-blue-800 bg-blue-200 hover:bg-blue-300 focus:outline-none transition duration-150">
+                        <span>1. Rozumienie (<span class="italic">Verstehen</span>)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-v-1" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Cel:</span> Wnikanie w sens i subiektywną perspektywę osoby. Poszukiwanie motywacji i znaczenia (np. związku między lękami a wartościami).</li>
+                            <li><span class="font-semibold">Charakter:</span> Jakościowy, interpretacyjny. Związany z empatią i wczuciem.</li>
+                            <li><span class="font-semibold">Kontekst:</span> Nauki humanistyczne, psychologia rozumiejąca (Dilthey, Jaspers).</li>
+                            <li><span class="font-semibold">Przykład:</span> Rozumiemy, dlaczego student unika nauki, analizując jego <span class="italic">obawy przed niepowodzeniem</span>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-blue-50">
+                    <button onclick="toggleAccordion('content-e-2')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-blue-800 bg-blue-200 hover:bg-blue-300 focus:outline-none transition duration-150">
+                        <span>2. Wyjaśnianie (<span class="italic">Erklären</span>)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-e-2" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li><span class="font-semibold">Cel:</span> Poszukiwanie przyczynowo-skutkowych związków i ogólnych praw. Ustalenie, dlaczego zjawisko wystąpiło.</li>
+                            <li><span class="font-semibold">Charakter:</span> Ilościowy, przyrodniczy. Opiera się na metodach empirycznych i generalizacji.</li>
+                            <li><span class="font-semibold">Kontekst:</span> Nauki przyrodnicze, psychologia wyjaśniająca (behawioryzm, psychologia poznawcza).</li>
+                            <li><span class="font-semibold">Przykład:</span> Wyjaśniamy, dlaczego student ma trudności z koncentracją, badając <span class="italic">zmiany neurochemiczne</span> lub wpływ niedoboru snu.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-md overflow-hidden bg-blue-50">
+                    <button onclick="toggleAccordion('content-rel-3')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-blue-800 bg-blue-200 hover:bg-blue-300 focus:outline-none transition duration-150">
+                        <span>3. Relacja w Psychologii (Integracja)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-rel-3" class="accordion-content">
+                        <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                            <li>Współczesna psychologia (kliniczna, rozwojowa) dąży do integracji obu perspektyw.</li>
+                            <li>Rozumienie (perspektywa jednostki) prowadzi do hipotez, które są wyjaśniane (mechanizmy naukowe).</li>
+                            <li>Zrozumienie tej dychotomii jest fundamentalne dla wyboru metod badawczych.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tabela Porównawcza (w jednej sekcji dla przejrzystości) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-blue-50">
+                    <button onclick="toggleAccordion('content-diff-4')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-blue-800 bg-blue-200 hover:bg-blue-300 focus:outline-none transition duration-150">
+                        <span>4. Kluczowe Różnice (Tabela Porównawcza)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-diff-4" class="accordion-content">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-blue-200 text-sm border border-blue-300 rounded-lg">
+                                <thead class="bg-blue-300">
+                                    <tr>
+                                        <th class="px-2 py-3 text-left text-blue-900">Cecha</th>
+                                        <th class="px-2 py-3 text-left text-blue-900">Rozumienie (Verstehen)</th>
+                                        <th class="px-2 py-3 text-left text-blue-900">Wyjaśnianie (Erklären)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-blue-200">
+                                    <tr>
+                                        <td class="px-2 py-2 font-medium">Cel</td>
+                                        <td class="px-2 py-2">Sens, motywacja, subiektywność</td>
+                                        <td class="px-2 py-2">Przyczyny, mechanizmy, prawa ogólne</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-2 py-2 font-medium">Metoda</td>
+                                        <td class="px-2 py-2">Jakościowa, interpretacja, empatia</td>
+                                        <td class="px-2 py-2">Ilościowa, empiryczna, obiektywizm</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-2 py-2 font-medium">Kierunek</td>
+                                        <td class="px-2 py-2">Humanistyczny</td>
+                                        <td class="px-2 py-2">Przyrodniczy</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Ekran 6: Etapy Eriksona (KOLORY TĘCZY) -->
+        <div id="erikson-stages-content" class="screen">
+            <button onclick="showScreen('menu-screen')"
+                class="mb-6 w-full py-2 bg-indigo-100 text-indigo-600 font-medium rounded-lg shadow hover:bg-indigo-200 transition duration-150">
+                &lt; Powrót do Menu
+            </button>
+            <h2 class="text-3xl font-bold text-orange-700 mb-6 text-center border-b pb-3 border-orange-300">🪜 Osiem Etapów Rozwoju Psychospołecznego wg Eriksona</h2>
+            
+            <div class="space-y-3">
+                
+                <!-- 1. Czerwony (Zaufanie vs Nieufność) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-red-50">
+                    <button onclick="toggleAccordion('erikson-1')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-red-800 bg-red-200 hover:bg-red-300 focus:outline-none transition duration-150">
+                        <span>1. Zaufanie vs Nieufność (0-1 rok)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-1" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-red-700">Cechy adaptacyjne:</span> Poczucie bezpieczeństwa, ufność do świata i ludzi.</p>
+                        <p><span class="font-semibold text-red-700">Cechy nieadaptacyjne:</span> Nieufność, lęk, brak poczucia bezpieczeństwa.</p>
+                    </div>
+                </div>
+
+                <!-- 2. Pomarańczowy (Autonomia vs Wstyd i Zwątpienie) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-orange-50">
+                    <button onclick="toggleAccordion('erikson-2')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-orange-800 bg-orange-200 hover:bg-orange-300 focus:outline-none transition duration-150">
+                        <span>2. Autonomia vs Wstyd i Zwątpienie (2-3 lata)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-2" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-orange-700">Cechy adaptacyjne:</span> Samodzielność, pewność siebie, kontrola nad własnym ciałem.</p>
+                        <p><span class="font-semibold text-orange-700">Cechy nieadaptacyjne:</span> Wstyd, zwątpienie w swoje możliwości, zależność od innych.</p>
+                    </div>
+                </div>
+
+                <!-- 3. Żółty (Inicjatywa vs Poczucie winy) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-yellow-50">
+                    <button onclick="toggleAccordion('erikson-3')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-yellow-800 bg-yellow-200 hover:bg-yellow-300 focus:outline-none transition duration-150">
+                        <span>3. Inicjatywa vs Poczucie winy (3-6 lat)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-3" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-yellow-700">Cechy adaptacyjne:</span> Inicjatywa, aktywność, planowanie działań.</p>
+                        <p><span class="font-semibold text-yellow-700">Cechy nieadaptacyjne:</span> Poczucie winy, zahamowania, niezdolność do inicjatywy.</p>
+                    </div>
+                </div>
+
+                <!-- 4. Zielony (Pracowitość vs Poczucie niższości) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-green-50">
+                    <button onclick="toggleAccordion('erikson-4')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-green-800 bg-green-200 hover:bg-green-300 focus:outline-none transition duration-150">
+                        <span>4. Pracowitość vs Poczucie niższości (6-12 lat)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-4" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-green-700">Cechy adaptacyjne:</span> Kompetencje, poczucie własnej wartości, produktywność.</p>
+                        <p><span class="font-semibold text-green-700">Cechy nieadaptacyjne:</span> Poczucie niższości, brak wiary w siebie, słaba motywacja.</p>
+                    </div>
+                </div>
+
+                <!-- 5. Turkusowy (Tożsamość vs Rozproszenie ról) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-teal-50">
+                    <button onclick="toggleAccordion('erikson-5')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-teal-800 bg-teal-200 hover:bg-teal-300 focus:outline-none transition duration-150">
+                        <span>5. Tożsamość vs Rozproszenie ról (12-18 lat)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-5" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-teal-700">Cechy adaptacyjne:</span> Poczucie własnej tożsamości, kierunek życia.</p>
+                        <p><span class="font-semibold text-teal-700">Cechy nieadaptacyjne:</span> Kryzys tożsamości, dezorientacja, brak celu.</p>
+                    </div>
+                </div>
+
+                <!-- 6. Niebieski (Intymność vs Izolacja) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-blue-50">
+                    <button onclick="toggleAccordion('erikson-6')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-blue-800 bg-blue-200 hover:bg-blue-300 focus:outline-none transition duration-150">
+                        <span>6. Intymność vs Izolacja (18-40 lat)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-6" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-blue-700">Cechy adaptacyjne:</span> Umiejętność tworzenia bliskich relacji, miłość, wspólnota.</p>
+                        <p><span class="font-semibold text-blue-700">Cechy nieadaptacyjne:</span> Izolacja, lęk przed zaangażowaniem.</p>
+                    </div>
+                </div>
+
+                <!-- 7. Indygo/Granatowy (Twórczość vs Stagnacja) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-indigo-50">
+                    <button onclick="toggleAccordion('erikson-7')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-indigo-800 bg-indigo-200 hover:bg-indigo-300 focus:outline-none transition duration-150">
+                        <span>7. Twórczość vs Stagnacja (40-65 lat)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-7" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-indigo-700">Cechy adaptacyjne:</span> Poczucie produktywności, troska o innych (rozwój).</p>
+                        <p><span class="font-semibold text-indigo-700">Cechy nieadaptacyjne:</span> Stagnacja, egocentryzm, brak rozwoju.</p>
+                    </div>
+                </div>
+
+                <!-- 8. Fioletowy (Integralność vs Rozpacz) -->
+                <div class="rounded-lg shadow-md overflow-hidden bg-purple-50">
+                    <button onclick="toggleAccordion('erikson-8')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-purple-800 bg-purple-200 hover:bg-purple-300 focus:outline-none transition duration-150">
+                        <span>8. Integralność vs Rozpacz (>65 lat)</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="erikson-8" class="accordion-content space-y-2 text-gray-700">
+                        <p><span class="font-semibold text-purple-700">Cechy adaptacyjne:</span> Akceptacja życia, mądrość, poczucie spełnienia.</p>
+                        <p><span class="font-semibold text-purple-700">Cechy nieadaptacyjne:</span> Rozpacz, żal, poczucie straty, niezadowolenie z życia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Ekran 7: O Przebaczeniu (FIOLETOWY) -->
+        <div id="forgiveness-content" class="screen">
+            <button onclick="showScreen('menu-screen')"
+                class="mb-6 w-full py-2 bg-purple-100 text-purple-600 font-medium rounded-lg shadow hover:bg-purple-200 transition duration-150">
+                &lt; Powrót do Menu
+            </button>
+            <h2 class="text-3xl font-bold text-purple-700 mb-6 text-center border-b pb-3 border-purple-300">💜 O Przebaczeniu i Pojednaniu</h2>
+
+            <!-- Sekcja Przebaczenie -->
+            <div class="rounded-lg shadow-md overflow-hidden bg-purple-50 mb-3">
+                <button onclick="toggleAccordion('content-forgiveness1')" 
+                        class="flex justify-between items-center w-full p-4 font-bold text-left text-purple-800 bg-purple-200 hover:bg-purple-300 focus:outline-none transition duration-150">
+                    <span>Przebaczenie</span>
+                    <svg class="w-6 h-6 transition-transform duration-300 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-forgiveness1" class="accordion-content">
+                    <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                        <li>To <span class="font-semibold">akt wewnętrzny</span> wykonywany dla samego siebie, dla spokoju wewnętrznego.</li>
+                        <li>Jest to <span class="font-semibold">akt jednostronny</span> (można przebaczyć w niewiedzy dla osoby).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sekcja Pojednanie -->
+            <div class="rounded-lg shadow-md overflow-hidden bg-purple-50 mb-3">
+                <button onclick="toggleAccordion('content-forgiveness2')" 
+                        class="flex justify-between items-center w-full p-4 font-bold text-left text-purple-800 bg-purple-200 hover:bg-purple-300 focus:outline-none transition duration-150">
+                    <span>Pojednanie</span>
+                    <svg class="w-6 h-6 transition-transform duration-300 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-forgiveness2" class="accordion-content">
+                    <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                        <li>Powrót do relacji, zmiana stylu komunikacji.</li>
+                        <li>Obejmuje pracę z osobą, wyjaśnianie/przyjmowanie wiadomości itp.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sekcja Pamiętanie -->
+            <div class="rounded-lg shadow-md overflow-hidden bg-purple-50">
+                <button onclick="toggleAccordion('content-forgiveness3')" 
+                        class="flex justify-between items-center w-full p-4 font-bold text-left text-purple-800 bg-purple-200 hover:bg-purple-300 focus:outline-none transition duration-150">
+                    <span>Pamiętanie (nie zapominanie)</span>
+                    <svg class="w-6 h-6 transition-transform duration-300 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-forgiveness3" class="accordion-content">
+                    <ul class="list-disc ml-6 space-y-1 text-gray-700">
+                        <li>Pomaga, jeżeli "pierwsze symptomy powracają".</li>
+                        <li>Ma na celu <span class="font-semibold">ochronę przed ponownym skrzywdzeniem</span>.</li>
+                        <li>Oznacza aktywne wyciąganie wniosków i weryfikowanie planów działania w przyszłości.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
