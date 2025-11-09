@@ -41,6 +41,25 @@
         }
     </style>
     <script>
+        // UWAGA: HASŁO DO DOSTĘPU DO STRONY. Zmienione na DUPA (Duża Ukryta Płytka Afirmacyjna).
+        const SECRET_PASSWORD = "DUPA";
+
+        // Funkcja do sprawdzania hasła
+        function checkPassword() {
+            const input = document.getElementById('password-input').value.toUpperCase();
+            const errorMsg = document.getElementById('password-error');
+            
+            if (input === SECRET_PASSWORD) {
+                errorMsg.textContent = '';
+                // Blokowanie dalszego wprowadzania, aby uniknąć problemów w navigacji
+                document.getElementById('password-input').disabled = true; 
+                showScreen('welcome-screen');
+            } else {
+                errorMsg.textContent = 'Błędne hasło! Spróbuj ponownie.';
+                document.getElementById('password-input').value = ''; // Wyczyść pole po niepowodzeniu
+            }
+        }
+
         // Funkcja do przełączania ekranów
         function showScreen(screenId) {
             const screens = document.querySelectorAll('.screen');
@@ -86,9 +105,9 @@
             }
         }
 
-        // Uruchomienie ekranu startowego po załadowaniu
+        // Uruchomienie ekranu hasła po załadowaniu
         window.onload = () => {
-            showScreen('welcome-screen');
+            showScreen('password-screen');
         };
     </script>
 </head>
@@ -97,6 +116,28 @@
     <!-- Kontener Główny - Centruje zawartość i nadaje ładny cień -->
     <div class="container mx-auto bg-white rounded-xl shadow-2xl p-6 min-h-[calc(100vh-2rem)]">
         
+        <!-- EKRAN HASŁA -->
+        <div id="password-screen" class="screen flex flex-col items-center justify-center text-center h-full min-h-[500px]">
+            <div class="p-8 bg-indigo-50 rounded-2xl shadow-xl w-full max-w-xs">
+                <h1 class="text-3xl font-bold text-indigo-700 mb-4">Strefa Zastrzeżona</h1>
+                <p class="text-gray-500 mb-6">Wprowadź 4-literowe Hasło dostępu, aby kontynuować.</p>
+                
+                <input type="password" 
+                       id="password-input" 
+                       maxlength="4" 
+                       class="p-3 border-2 border-indigo-400 rounded-lg text-2xl text-center tracking-widest uppercase mb-2 w-full focus:ring-4 focus:ring-indigo-300"
+                       onkeyup="if(this.value.length === 4) checkPassword()"
+                       autofocus>
+                
+                <p id="password-error" class="text-red-600 mb-4 h-5 font-medium text-sm"></p>
+
+                <button onclick="checkPassword()" 
+                        class="py-3 w-full bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-150 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                    ODBLOKUJ
+                </button>
+            </div>
+        </div>
+
         <!-- Ekran Powitalny (welcome-screen) -->
         <div id="welcome-screen" class="screen flex flex-col items-center justify-center text-center h-full min-h-[500px]">
             <h1 class="text-4xl font-extrabold text-blue-800 mb-4">Witaj w strefie wiedzy!</h1>
@@ -181,13 +222,13 @@
                         <span class="font-semibold text-xl text-purple-700">O Przebaczeniu i Pojednaniu</span>
                     </div>
                 </button>
-                
-                <!-- 8. NOWA ZAKŁADKA: Bejb z ❤️ (ROSE) -->
-                <button onclick="showScreen('bejb-content')"
-                    class="w-full text-left p-4 rounded-xl shadow-lg bg-rose-50 hover:bg-rose-100 transition duration-150 border-l-4 border-rose-500 transform hover:translate-x-0.5">
+
+                <!-- 8. Cień i Integracja (SZARY/NEUTRALNY) -->
+                <button onclick="showScreen('shadow-content')"
+                    class="w-full text-left p-4 rounded-xl shadow-lg bg-neutral-100 hover:bg-neutral-200 transition duration-150 border-l-4 border-neutral-500 transform hover:translate-x-0.5">
                     <div class="flex items-center">
-                        <span class="text-2xl mr-3 text-rose-600">💖</span>
-                        <span class="font-semibold text-xl text-rose-700">Bejb z ❤️</span>
+                        <span class="text-2xl mr-3 text-neutral-600">🌑</span>
+                        <span class="font-semibold text-xl text-neutral-700">Cień (Shadow), jego Integracja i Inflacja</span>
                     </div>
                 </button>
             </div>
@@ -557,7 +598,7 @@
                     <div id="content-rel-3" class="accordion-content">
                         <ul class="list-disc ml-6 space-y-1 text-gray-700">
                             <li>Współczesna psychologia (kliniczna, rozwojowa) dąży do integracji obu perspektyw.</li>
-                            <li>Rozumienie (perspektywa jednostki) prowadzi do hipotez, które są wyjaśniane (mechanizmy naukowe).</li>
+                            <li>Rozumienie (perspektywy jednostki) prowadzi do hipotez, które są wyjaśniane (mechanizmy naukowe).</li>
                             <li>Zrozumienie tej dychotomii jest fundamentalne dla wyboru metod badawczych.</li>
                         </ul>
                     </div>
@@ -777,24 +818,79 @@
             </div>
         </div>
         
-        <!-- Ekran 8: Bejb z ❤️ (ROSE) - Uproszczona lista -->
-        <div id="bejb-content" class="screen">
+        <!-- Ekran 8: Cień i Integracja (SZARY/NEUTRALNY) -->
+        <div id="shadow-content" class="screen">
             <button onclick="showScreen('menu-screen')"
-                class="mb-6 w-full py-2 bg-rose-100 text-rose-600 font-medium rounded-lg shadow hover:bg-rose-200 transition duration-150">
+                class="mb-6 w-full py-2 bg-neutral-100 text-neutral-600 font-medium rounded-lg shadow hover:bg-neutral-200 transition duration-150">
                 &lt; Powrót do Menu
             </button>
-            <h2 class="text-3xl font-bold text-rose-700 mb-6 text-center border-b pb-3 border-rose-300">💖 Bejb z ❤️</h2>
+            <h2 class="text-3xl font-bold text-neutral-700 mb-6 text-center border-b pb-3 border-neutral-300">🌑 Cień (Shadow), jego Integracja i Inflacja</h2>
+            
+            <div class="space-y-4">
+                
+                <div class="rounded-lg shadow-xl overflow-hidden bg-neutral-50 border-t-4 border-neutral-500">
+                    <button onclick="toggleAccordion('shadow-1')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-neutral-800 bg-neutral-200 hover:bg-neutral-300 focus:outline-none transition duration-150">
+                        <span>1. Cień (Shadow) - Nieświadomy Magazyn Cech</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="shadow-1" class="accordion-content space-y-3 text-gray-700">
+                        <p class="font-bold text-lg text-neutral-700">Definicja (Carl Jung):</p>
+                        <ul class="list-disc ml-6 space-y-1">
+                            <li>Cień to nieświadoma część osobowości zawierająca cechy, emocje i instynkty, których nie chcemy u siebie widzieć lub które uznajemy za nieakceptowalne społecznie.</li>
+                            <li><span class="font-semibold">Strefa Cienia:</span> Cechy, które, gdyby zostały ujawnione, byłyby uważane za nieakceptowalne.</li>
+                        </ul>
+                        <p class="font-bold text-lg text-neutral-700 mt-3">Potencjał Cienia:</p>
+                        <ul class="list-disc ml-6 space-y-1">
+                            <li>Całe dobro i zło tego świata jest potencjałem, który istnieje także w nas – Cień zawiera zarówno mroczne, jak i nieodkryte, pozytywne zasoby.</li>
+                        </ul>
+                    </div>
+                </div>
 
-            <div class="space-y-4 mb-8">
-                <h3 class="text-xl font-semibold text-rose-600">Oto lista zasad dla Twojego Bejba:</h3>
-                <!-- Zaktualizowana lista z nowym punktem 3, który jest zgodny z zasadami -->
-                <ol class="list-decimal ml-6 space-y-2 text-gray-700 text-lg p-4 bg-rose-100 rounded-lg shadow-md border-l-4 border-rose-500">
-                    <li class="font-semibold text-rose-700">Kochać Bejba</li>
-                    <li><span class="font-semibold">Otwarcie okazywać czułość i przywiązanie.</span></li>
-                    <li><span class="font-semibold">Pielęgnować bliskość i dbać o potrzeby partnera.</span></li>
-                    <li><span class="font-semibold">Dawać mu buziaczki.</span></li>
-                </ol>
-                <p class="text-sm text-gray-500 italic mt-4">Pamiętaj, dbanie o związek polega na wzajemnym szacunku i komunikacji!</p>
+                <div class="rounded-lg shadow-xl overflow-hidden bg-neutral-50 border-t-4 border-neutral-500">
+                    <button onclick="toggleAccordion('shadow-2')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-neutral-800 bg-neutral-200 hover:bg-neutral-300 focus:outline-none transition duration-150">
+                        <span>2. Integracja Cienia - Akceptacja Pełnego Siebie</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="shadow-2" class="accordion-content space-y-3 text-gray-700">
+                        <p class="font-bold text-lg text-neutral-700">Charakterystyka Integracji:</p>
+                        <ul class="list-disc ml-6 space-y-1">
+                            <li>Proces włączania wypartych treści Cienia do świadomej osobowości (<span class="font-semibold">zjawisko prorozwojowe</span>).</li>
+                            <li>Polega na akceptacji własnego cienia i uznaniu, że w nas istnieje zarówno dobro, jak i zło.</li>
+                            <li>Oznacza przyjęcie do świadomości swoich własnych cech i włączenie Cienia w całościowy obraz całego siebie.</li>
+                        </ul>
+                        <p class="font-bold text-lg text-neutral-700 mt-3">Kluczowy Efekt:</p>
+                        <ul class="list-disc ml-6 space-y-1">
+                            <li>Pozwala <span class="font-semibold">zmniejszyć mechanizmy obronne</span> (np. projekcję) – przestajemy przerzucać swoje wady i niedoskonałości na innych.</li>
+                        </ul>
+                        <p class="text-sm italic mt-3 text-neutral-600">Przykład: Osoba odkrywa w sobie złość wobec współpracownika, przyjmuje to jako swoją własną część, nie obwiniając od razu innych.</p>
+                    </div>
+                </div>
+
+                <div class="rounded-lg shadow-xl overflow-hidden bg-neutral-50 border-t-4 border-neutral-500">
+                    <button onclick="toggleAccordion('shadow-3')" 
+                            class="flex justify-between items-center w-full p-4 font-bold text-left text-neutral-800 bg-neutral-200 hover:bg-neutral-300 focus:outline-none transition duration-150">
+                        <span>3. 💥 Inflacja Cienia - Ryzyko Utraty Równowagi</span>
+                        <svg class="w-6 h-6 transition-transform duration-300 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="shadow-3" class="accordion-content space-y-3 text-gray-700">
+                        <p class="font-bold text-lg text-neutral-700">Definicja Inflacji (Przeciwieństwo Integracji):</p>
+                        <ul class="list-disc ml-6 space-y-1">
+                            <li>Stan, w którym Cień <span class="font-semibold">"zalewa" naszą świadomość</span> i dominuje w naszej osobowości.</li>
+                            <li>Prowadzi do przesadnej identyfikacji z negatywnymi cechami lub emocjami.</li>
+                            <li>Odkrywając w sobie coś, nadajemy temu nadmiernie negatywną wagę.</li>
+                        </ul>
+                        <p class="font-bold text-lg text-neutral-700 mt-3">Efekty (Konfrontacja z Cieniem):</p>
+                        <ul class="list-disc ml-6 space-y-1">
+                            <li>Destrukcja i utrata równowagi psychicznej.</li>
+                            <li>Poczucie, że jesteśmy "tylko" tym, czego nie chcemy.</li>
+                            <li>Zmiana postrzegania siebie na gorsze.</li>
+                        </ul>
+                        <p class="text-sm italic mt-3 text-neutral-600">Wszystkie notatki opierają się na koncepcjach C. G. Junga (analityczna psychologia), które pomagają spotkać się tak naprawdę z samym sobą.</p>
+                    </div>
+                </div>
+
             </div>
         </div>
 
